@@ -32,6 +32,8 @@ Article.prototype.getContent = function() {
   return this.cache['article-content'] = utils.extract(this.$, this.base).html();
 }
 
+// Better Article Title Extraction. 
+// Author Zihua Li https://github.com/luin/node-readability
 Article.prototype.getTitle = function() {
   if (typeof this.cache['article-title'] !== 'undefined') {
     return this.cache['article-title'];
