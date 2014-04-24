@@ -180,8 +180,7 @@ function getCandidates($, base) {
     if (nodeType == "img" && typeof base != "undefined") {
       node.attr('src', url.resolve(base, node.attr('src')));
     }
-    if (nodeType == "a"
-      typeof base != "undefined") {
+    if (nodeType == "a" && typeof base != "undefined") {
       node.attr('href', url.resolve(base, node.attr('href')));
     }
 
