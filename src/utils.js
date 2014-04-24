@@ -127,7 +127,7 @@ function getCandidates($, base) {
   var candidates = [];
 
   // Iterate over all Nodes in body
-  $("*", 'body').each(function(index, element) {
+  $('html').contents().each(function(index, element) {
     var node = $(this);
     var nodeType = node.get(0).name;
 
@@ -206,7 +206,7 @@ function initializeNode(node) {
  **/
 
 function getClassWeight(node) {
-  if (node == null) return;
+  if (node == null) return 0;
   var classAndID = node.attr('class') + node.attr('id');
   if (typeof classAndID != "string") return 0;
   var weight = 0;

@@ -72,7 +72,7 @@ var read = module.exports = function(html, options, callback) {
     callback = options;
     options = {};
   }
-  
+
   if (html.indexOf('<') === -1) {
     request(html, options, function(err, res, buffer) {
       parseDOM(buffer.toString(), res);
@@ -91,6 +91,3 @@ var read = module.exports = function(html, options, callback) {
     return callback(null, new Article($, options, res.request.uri), res);
   }
 }
-read('https://connect.microsoft.com/VisualStudio/feedback/details/812643/artery-chokes-after-70-copies-of-visual-studio', function(err, article, res) {
-  console.log(article.content);
-});
