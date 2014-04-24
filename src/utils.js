@@ -1,4 +1,12 @@
+/*
+ * Url module. Required for resolving relative paths.
+ */
+
 var url = require("url");
+
+/*
+ * Regexp from origin Arc90 Readability.
+ */
 
 var regexps = {
   unlikelyCandidatesRe: /combx|pager|comment|disqus|foot|header|menu|meta|nav|rss|shoutbox|sidebar|sponsor|share|bookmark|social|advert|leaderboard|instapaper_ignore/i,
@@ -14,6 +22,10 @@ var regexps = {
   videoRe: /http:\/\/(www\.)?(youtube|vimeo|youku|tudou|56|yinyuetai)\.com/i
 };
 
+/**
+ * Node Types and their classification
+ **/
+
 var nodeTypes = {
   'mostPositive': ['div'],
   'positive': ['pre', 'td', 'blockquote'],
@@ -21,8 +33,15 @@ var nodeTypes = {
   'mostNegative': ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'th']
 }
 
-// We're getting only the readable content + images, no other nodes are needed.
+/**
+ * We're getting only the readable content + images, no other nodes are needed.
+ **/
+
 var trashNodes = 'iframe,noscript,script,style,link,aside,object,form';
+
+/**
+ * Select the TopCandidate from all possible candidates
+ **/
 
 function getArticle(candidates, $) {
   var topCandidate = null;
@@ -35,6 +54,7 @@ function getArticle(candidates, $) {
       topCandidate = elem;
     }
   });
+
   /**
    * If we still have no top candidate, just use the body as a last resort.
    * We also have to copy the body node so it is something we can modify.
@@ -44,13 +64,18 @@ function getArticle(candidates, $) {
     if (!$('body')) return new Error("No body tag was found.");
     return $('body');
   }
-
+  // Perhaps the topCandidate is the parent?
   if (topCandidate.children().length > 5) {
     return filterCandidates(topCandidate, topCandidate.children(), $);
   } else {
     return filterCandidates(topCandidate, topCandidate.parent().children(), $);
   }
 }
+
+/**
+ * Filter TopCandidate Siblings (Children) based on their Link Density, and readabilityScore
+ * Append the nodes to articleContent
+ **/
 
 function filterCandidates(topCandidate, siblings, $) {
 
@@ -83,6 +108,10 @@ function filterCandidates(topCandidate, siblings, $) {
   });
   return articleContent;
 }
+
+/**
+ * Traverse all Nodes and remove unlikely Candidates.
+ **/
 
 function getCandidates($, base) {
 
@@ -123,6 +152,7 @@ function getCandidates($, base) {
     if (nodeType == "p") {
       var txt = node.text();
       var contentScore = 0;
+
       // Add a point for the paragraph itself as a base. */
       ++contentScore;
 
@@ -133,6 +163,9 @@ function getCandidates($, base) {
       // For every 100 characters in this paragraph, add another point. Up to 3 points. */
       contentScore += Math.min(Math.floor(txt.length / 100), 3);
       var parent = node.parent();
+
+      // Initialize Parent and Grandparent
+      // First initialize the parent node with contentScore / 1, then grandParentNode with contentScore / 2
       for (var i = 1; i <= 2; i++) {
         if (typeof parent.data('readabilityScore') == "undefined" && parent.get(0) != "undefined") {
           var score = initializeNode(parent);
@@ -143,6 +176,7 @@ function getCandidates($, base) {
       }
     }
 
+    // Resolve URLs
     if (nodeType == "img") {
       node.attr('src', url.resolve(base, node.attr('src')));
     }
@@ -154,6 +188,10 @@ function getCandidates($, base) {
   return candidates;
 }
 
+/**
+ * Check the type of node, and get its Weight
+ **/
+
 function initializeNode(node) {
   var tag = node.get(0).name;
   if (nodeTypes['mostPositive'].indexOf(tag)) return 5 + getClassWeight(node);
@@ -161,6 +199,10 @@ function initializeNode(node) {
   if (nodeTypes['negative'].indexOf(tag)) return -3 + getClassWeight(node);
   if (nodeTypes['mostNegative'].indexOf(tag)) return -5 + getClassWeight(node);
 }
+
+/**
+ * Node Weight is calculated based on className and ID of the node.
+ **/
 
 function getClassWeight(node) {
   var classAndID = node.attr('class') + node.attr('id');
@@ -171,6 +213,12 @@ function getClassWeight(node) {
 
   return weight;
 }
+
+/**
+ * Get Link density of this node.
+ * Total length of text in this node divided by the link text of the node.
+ * Relative links are not included.
+ **/
 
 function getLinkDensity(node, $) {
   var links = node.find('a');
@@ -183,6 +231,11 @@ function getLinkDensity(node, $) {
   });
   return linkLength / textLength;
 }
+
+/**
+ * Main method
+ * If the first run does not succeed, try the body element;
+ **/
 
 module.exports.extract = function($, base) {
   var candidates = getCandidates($, base);
