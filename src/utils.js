@@ -177,10 +177,11 @@ function getCandidates($, base) {
     }
 
     // Resolve URLs
-    if (nodeType == "img") {
+    if (nodeType == "img" && typeof base != "undefined") {
       node.attr('src', url.resolve(base, node.attr('src')));
     }
-    if (nodeType == "a") {
+    if (nodeType == "a"
+      typeof base != "undefined") {
       node.attr('href', url.resolve(base, node.attr('href')));
     }
 
@@ -193,6 +194,7 @@ function getCandidates($, base) {
  **/
 
 function initializeNode(node) {
+  if (typeof node.get(0) != "undefined") return 0;
   var tag = node.get(0).name;
   if (nodeTypes['mostPositive'].indexOf(tag)) return 5 + getClassWeight(node);
   if (nodeTypes['positive'].indexOf(tag)) return 3 + getClassWeight(node);
