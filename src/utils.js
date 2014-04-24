@@ -177,10 +177,10 @@ function getCandidates($, base) {
     }
 
     // Resolve URLs
-    if (nodeType == "img" && typeof base != "undefined") {
+    if (nodeType == "img" && typeof node.attr('href') != "undefined") {
       node.attr('src', url.resolve(base, node.attr('src')));
     }
-    if (nodeType == "a" && typeof base != "undefined") {
+    if (nodeType == "a" && typeof node.attr('href') != "undefined") {
       node.attr('href', url.resolve(base, node.attr('href')));
     }
 
