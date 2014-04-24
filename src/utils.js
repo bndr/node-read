@@ -206,6 +206,7 @@ function initializeNode(node) {
  **/
 
 function getClassWeight(node) {
+  if (node == null) return;
   var classAndID = node.attr('class') + node.attr('id');
   if (typeof classAndID != "string") return 0;
   var weight = 0;
