@@ -12,7 +12,7 @@ var regexps = {
   unlikelyCandidatesRe: /combx|pager|comment|disqus|foot|header|menu|meta|nav|rss|shoutbox|sidebar|sponsor|share|bookmark|social|advert|leaderboard|instapaper_ignore/i,
   okMaybeItsACandidateRe: /and|article|body|column|main/i,
   positiveRe: /article|body|content|entry|hentry|page|pagination|post|text/i,
-  negativeRe: /combx|comment|contact|foot|footer|footnote|link|media|meta|promo|related|scroll|shoutbox|sponsor|utility|tags|widget/i,
+  negativeRe: /combx|comment|captcha|contact|foot|footer|footnote|link|media|meta|promo|related|scroll|shoutbox|sponsor|utility|tags|widget/i,
   divToPElementsRe: /<(a|blockquote|dl|div|img|ol|p|pre|table|ul)/i,
   replaceBrsRe: /(<br[^>]*>[ \n\r\t]*){2,}/gi,
   replaceFontsRe: /<(\/?)font[^>]*>/gi,
@@ -127,7 +127,7 @@ function getCandidates($, base) {
   var candidates = [];
 
   // Iterate over all Nodes in body
-  $('html').contents().each(function(index, element) {
+  $('*', 'body').each(function(index, element) {
     var node = $(this);
     var nodeType = node.get(0).name;
 
@@ -140,7 +140,7 @@ function getCandidates($, base) {
     }
 
     // Remove Elements that have no children and have no content
-    if (nodeType == "div" && node.children().length < 1 && node.text().length < 1) {
+    if (nodeType == "div" && node.children().length < 1 && node.html().length < 1) {
       node.remove();
       return;
     }
@@ -184,6 +184,15 @@ function getCandidates($, base) {
       node.attr('href', url.resolve(base, node.attr('href')));
     }
 
+    // Clean the headers
+    if (["h1", "h2", "h3", "h4", "h5", "h6"].indexOf(nodeType) !== -1) {
+      var weight = getClassWeight(node, $);
+      var density = getLinkDensity(node, $);
+      if (weight < 0 || density > 0.3) {
+        node.remove();
+      }
+    }
+
   });
   return candidates;
 }
@@ -218,7 +227,7 @@ function getClassWeight(node) {
 
 /**
  * Get Link density of this node.
- * Total length of text in this node divided by the link text of the node.
+ * Total length of link text in this node divided by the total text of the node.
  * Relative links are not included.
  **/
 
@@ -231,7 +240,7 @@ function getLinkDensity(node, $) {
     if (!href || (href.length > 0 && href[0] === '#')) return;
     linkLength += $(this).text().length;
   });
-  return linkLength / textLength;
+  return (linkLength / textLength) || 0;
 }
 
 /**
