@@ -145,8 +145,7 @@ function getCandidates($, base) {
       return;
     }
 
-    // Remove Class and Style 
-    node.removeAttr('class');
+    // Remove Style 
     node.removeAttr('style');
 
     if (nodeType == "p") {
