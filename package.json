@@ -1,0 +1,33 @@
+{
+	"name": "node-read",
+	"version": "0.0.2",
+	"author": "Vadim Kravcenko",
+	"description": "Get Clean Reading Content from every web page",
+	"homepage": "https://github.com/bndr/node-read",
+	"dependencies": {
+		"request": "^2.34.0",
+		"cheerio": "^0.15.0"
+	},
+	"devDependencies": {
+		"mocha": "~1.8.2",
+		"should": "~2.1.1",
+		"nock": "~0.27.1"
+	},
+	"licenses": [{
+		"type": "Apache License 2.0",
+		"url": "http://www.apache.org/licenses/LICENSE-2.0"
+	}],
+	"keywords": [
+		"readability",
+		"readable",
+		"scraper",
+		"extract"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/bndr/node-read.git"
+	},
+	"scripts": {
+		"test": "mocha -R spec"
+	}
+}
