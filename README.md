@@ -14,6 +14,10 @@ So I decided to write my own version of Arc90's Readability using the fast Cheer
 
 The Usage of this module is similiar to node-readability, so it's easy to switch.
 
+## Install
+
+    npm install node-read
+    
 ## Usage
 
 `read(html [, options], callback)`
@@ -28,7 +32,7 @@ Example
 
     var read = require('node-read');
 
-    read('http://howtonode.org/really-simple-file-uploads', function(err, article, meta) {
+    read('http://howtonode.org/really-simple-file-uploads', function(err, article, res) {
     
       // Main Article.
       console.log(article.content);
