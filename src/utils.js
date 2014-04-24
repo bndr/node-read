@@ -193,7 +193,7 @@ function getCandidates($, base) {
  **/
 
 function initializeNode(node) {
-  if (typeof node.get(0) != "undefined") return 0;
+  if (typeof node.get(0) == "undefined") return 0;
   var tag = node.get(0).name;
   if (nodeTypes['mostPositive'].indexOf(tag)) return 5 + getClassWeight(node);
   if (nodeTypes['positive'].indexOf(tag)) return 3 + getClassWeight(node);
