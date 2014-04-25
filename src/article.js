@@ -75,7 +75,7 @@ var read = module.exports = function(html, options, callback) {
 
   if (html.indexOf('<') === -1) {
     request(html, options, function(err, res, buffer) {
-      parseDOM(buffer.toString(), res);
+      parseDOM(buffer.toString("utf8"), res);
     });
   } else {
     parseDOM(html, null);

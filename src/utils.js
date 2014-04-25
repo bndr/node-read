@@ -37,7 +37,7 @@ var nodeTypes = {
  * We're getting only the readable content + images, no other nodes are needed.
  **/
 
-var trashNodes = 'iframe,noscript,script,style,link,aside,object,form';
+var trashNodes = 'meta,iframe,noscript,script,style,link,aside,object,form';
 
 /**
  * Select the TopCandidate from all possible candidates
@@ -49,7 +49,8 @@ function getArticle(candidates, $) {
   candidates.forEach(function(elem) {
     var linkDensity = getLinkDensity(elem, $);
     var score = elem.data('readabilityScore');
-    elem.data('readabilityScore', score * (1 - linkDensity));
+    var siblings = elem.find("p").length;
+    elem.data('readabilityScore', siblings * score * (1 - linkDensity));
     if (!topCandidate || elem.data('readabilityScore') > topCandidate.data('readabilityScore')) {
       topCandidate = elem;
     }
@@ -132,7 +133,7 @@ function getCandidates($, base) {
     var nodeType = node.get(0).name;
 
     // Remove Unlikely Candidates
-    var classAndID = $(this).attr('class') + $(this).attr('id');
+    var classAndID = node.attr('class') + node.attr('id');
     if (typeof classAndID != "string") classAndID = "";
     if (classAndID.search(regexps.unlikelyCandidatesRe) !== -1 && classAndID.search(regexps.okMaybeItsACandidateRe) == -1) {
       node.remove();
@@ -150,6 +151,10 @@ function getCandidates($, base) {
 
     if (nodeType == "p") {
       var txt = node.text();
+
+      // Ignore too small nodes
+      if (txt.length < 25) return;
+
       var contentScore = 0;
 
       // Add a point for the paragraph itself as a base. */
@@ -158,6 +163,9 @@ function getCandidates($, base) {
       // Add points for any commas within this paragraph */
       // support Chinese commas.
       contentScore += txt.replace('，', ',').split(',').length;
+
+      // Add points for stops.
+      contentScore += txt.split(".").length;
 
       // For every 100 characters in this paragraph, add another point. Up to 3 points. */
       contentScore += Math.min(Math.floor(txt.length / 100), 3);
@@ -216,8 +224,11 @@ function initializeNode(node) {
 function getClassWeight(node) {
   if (node == null) return 0;
   var classAndID = node.attr('class') + node.attr('id');
-  if (typeof classAndID != "string") return 0;
   var weight = 0;
+
+  if (node.get(0).name == "article") weight += 25;
+  if (typeof classAndID != "string") return weight;
+
   if (classAndID.search(regexps.negativeRe) !== -1) weight -= 25;
   if (classAndID.search(regexps.positiveRe) !== -1) weight += 25;
 
