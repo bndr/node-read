@@ -37,7 +37,7 @@ var nodeTypes = {
  * We're getting only the readable content + images, no other nodes are needed.
  **/
 
-var trashNodes = 'meta,iframe,noscript,script,style,link,aside,object,form';
+var trashNodes = 'meta,iframe,noscript,script,style,aside,object,form';
 
 /**
  * Select the TopCandidate from all possible candidates
@@ -131,12 +131,9 @@ function getCandidates($, base) {
   $('*', 'body').each(function(index, element) {
     var node = $(this);
     var nodeType = node.get(0).name;
-
     if (!node) return; // Avoid Illegal Access error
-
     // Remove Unlikely Candidates
     var classAndID = (node.attr('class') || "") + (node.attr('id') || "");
-    if (typeof classAndID != "string") classAndID = "";
     if (classAndID.search(regexps.unlikelyCandidatesRe) !== -1 && classAndID.search(regexps.okMaybeItsACandidateRe) == -1) {
       node.remove();
       return;
@@ -153,7 +150,6 @@ function getCandidates($, base) {
 
     if (nodeType == "p") {
       var txt = node.text();
-
       // Ignore too small nodes
       if (txt.length < 25) return;
 

@@ -1,6 +1,6 @@
 {
 	"name": "node-read",
-	"version": "0.0.16",
+	"version": "0.0.17",
 	"author": "Vadim Kravcenko",
 	"description": "Get Clean Reading Content from every web page",
 	"homepage": "https://github.com/bndr/node-read",
