@@ -132,6 +132,8 @@ function getCandidates($, base) {
     var node = $(this);
     var nodeType = node.get(0).name;
 
+    if (!node) return; // Avoid Illegal Access error
+
     // Remove Unlikely Candidates
     var classAndID = node.attr('class') + node.attr('id');
     if (typeof classAndID != "string") classAndID = "";

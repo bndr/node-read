@@ -6,7 +6,7 @@ function Article(dom, options, uri) {
   this.$ = dom; // Will be modified in-place after analyzing
   this.originalDOM = dom; // Save the original DOM if the user needs it
   this.cache = {};
-  if (typeof uri != "undefined") {
+  if (uri && typeof uri != "undefined") {
     this.base = uri.protocol + "//" + uri.hostname;
   } else {
     this.base = false;
@@ -84,10 +84,11 @@ var read = module.exports = function(html, options, callback) {
   function parseDOM(html, res) {
     if (typeof html !== 'string') html = html.toString();
     if (!html) return callback(new Error('Empty html'));
+    var url = (res) ? res.request.uri : null;
     var $ = cheerio.load(html, {
       normalizeWhitespace: true,
       xmlMode: true
     });
-    return callback(null, new Article($, options, res.request.uri), res);
+    return callback(null, new Article($, options, url), res);
   }
 }
