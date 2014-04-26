@@ -135,7 +135,7 @@ function getCandidates($, base) {
     if (!node) return; // Avoid Illegal Access error
 
     // Remove Unlikely Candidates
-    var classAndID = node.attr('class') + node.attr('id');
+    var classAndID = (node.attr('class') || "") + (node.attr('id') || "");
     if (typeof classAndID != "string") classAndID = "";
     if (classAndID.search(regexps.unlikelyCandidatesRe) !== -1 && classAndID.search(regexps.okMaybeItsACandidateRe) == -1) {
       node.remove();
