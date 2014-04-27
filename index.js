@@ -86,8 +86,7 @@ var read = module.exports = function(html, options, callback) {
     if (!html) return callback(new Error('Empty html'));
     var url = (res) ? res.request.uri : null;
     var $ = cheerio.load(html, {
-      normalizeWhitespace: true,
-      xmlMode: true
+      normalizeWhitespace: true
     });
     return callback(null, new Article($, options, url), res);
   }
