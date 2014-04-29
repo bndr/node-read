@@ -17,6 +17,22 @@ describe("Readability Test suite", function() {
 		});
 	});
 
+	it("should prefer to get title from entry-title class", function(done) {
+		read("<html><head><title>Incorrect Title</title></head><body><h1 class=\"entry-title\">Preferred Title</h1>Random Body</body></html", function(err, article, res) {
+			article.content.should.include("Random Body");
+			article.title.should.include("Preferred Title");
+			done();
+		});
+	});
+
+	it("should prefer to get title from instapaper_title class", function(done) {
+		read("<html><head><title>Incorrect Title</title></head><body><h1 class=\"instapaper_title\">Preferred Title</h1>Random Body</body></html", function(err, article, res) {
+			article.content.should.include("Random Body");
+			article.title.should.include("Preferred Title");
+			done();
+		});
+	});
+
 	it("Should throw exception if no body is present", function(done) {
 		read("<html></html", function(err, article, res) {
 			err.message.should.equal("No body tag was found");
