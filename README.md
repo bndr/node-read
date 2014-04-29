@@ -50,6 +50,11 @@ Example
 
 ##TODO
 
- * Tests. (Zero test coverage at this moment)
+ * Examples, Docs
  * Get Comments with articles
- * Better scoring of content based on siblings
+ * Get the Author of the article
+ * Better removal of unnecessary nodes
+ * Better scoring of content:
+    - Based on siblings
+    - Based on content length, common words
+    - Link density, Image density, other common elements density
