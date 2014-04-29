@@ -47,3 +47,9 @@ Example
       console.log(article.dom);
       
     });
+
+##TODO
+
+ * Tests. (Zero test coverage at this moment)
+ * Get Comments with articles
+ * Better scoring of content based on siblings
