@@ -1,6 +1,6 @@
 var utils = require('./lib/utils.js');
+var req = require('./lib/req.js');
 var cheerio = require('cheerio');
-var request = require('request');
 
 function Article(dom, options, uri) {
   this.$ = dom; // Will be modified in-place after analyzing
@@ -73,9 +73,13 @@ var read = module.exports = function(html, options, callback) {
     options = {};
   }
 
-  if (html.indexOf('<') === -1) {
-    request(html, options, function(err, res, buffer) {
-      parseDOM(buffer.toString("utf8"), res);
+  if (!html.match(/^\s*</)) {
+    options.uri = html;
+    req(options, function(err, res) {
+      if(err){
+        return callback(err);
+      }
+      parseDOM(res.body, res);
     });
   } else {
     parseDOM(html, null);
