@@ -39,6 +39,14 @@ Article.prototype.getTitle = function() {
     return this.cache['article-title'];
   }
 
+  // Prefer to pull the title from one of the class names known to hold
+  // the article title (Instapaper conventions and
+  // https://www.readability.com/developers/guidelines#publisher).
+  var preferredTitle = this.$('.entry-title, .instapaper_title');
+  if (preferredTitle.length > 0) {
+    return this.cache['article-title'] = preferredTitle.first().text();
+  }
+
   var title = this.$('title').text();
   var betterTitle;
   var commonSeparatingCharacters = [' | ', ' _ ', ' - ', '«', '»', '—'];
