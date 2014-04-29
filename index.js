@@ -76,7 +76,7 @@ var read = module.exports = function(html, options, callback) {
   if (!html.match(/^\s*</)) {
     options.uri = html;
     req(options, function(err, res) {
-      if(err){
+      if (err) {
         return callback(err);
       }
       parseDOM(res.body, res);
@@ -92,6 +92,7 @@ var read = module.exports = function(html, options, callback) {
     var $ = cheerio.load(html, {
       normalizeWhitespace: true
     });
+    if ($('body').length < 1) return callback(new Error("No body tag was found"));
     return callback(null, new Article($, options, url), res);
   }
 }
