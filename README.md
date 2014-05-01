@@ -47,3 +47,14 @@ Example
       console.log(article.dom);
       
     });
+
+##TODO
+
+ * Examples, Docs
+ * Get Comments with articles
+ * Get the Author of the article
+ * Better removal of unnecessary nodes
+ * Better scoring of content:
+    - Based on siblings
+    - Based on content length, common words
+    - Link density, Image density, other common elements density

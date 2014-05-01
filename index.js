@@ -39,6 +39,14 @@ Article.prototype.getTitle = function() {
     return this.cache['article-title'];
   }
 
+  // Prefer to pull the title from one of the class names known to hold
+  // the article title (Instapaper conventions and
+  // https://www.readability.com/developers/guidelines#publisher).
+  var preferredTitle = this.$('.entry-title, .instapaper_title');
+  if (preferredTitle.length > 0) {
+    return this.cache['article-title'] = preferredTitle.first().text();
+  }
+
   var title = this.$('title').text();
   var betterTitle;
   var commonSeparatingCharacters = [' | ', ' _ ', ' - ', '«', '»', '—'];
@@ -76,7 +84,7 @@ var read = module.exports = function(html, options, callback) {
   if (!html.match(/^\s*</)) {
     options.uri = html;
     req(options, function(err, res) {
-      if(err){
+      if (err) {
         return callback(err);
       }
       parseDOM(res.body, res);
@@ -92,6 +100,7 @@ var read = module.exports = function(html, options, callback) {
     var $ = cheerio.load(html, {
       normalizeWhitespace: true
     });
+    if ($('body').length < 1) return callback(new Error("No body tag was found"));
     return callback(null, new Article($, options, url), res);
   }
 }
