@@ -11,6 +11,7 @@ function Article(dom, options, uri) {
   } else {
     this.base = false;
   }
+  this.options = options;
   this.__defineGetter__('content', function() {
     return this.getContent(true);
   });
@@ -29,7 +30,7 @@ Article.prototype.getContent = function() {
   if (typeof this.cache['article-content'] !== 'undefined') {
     return this.cache['article-content'];
   }
-  return this.cache['article-content'] = utils.extract(this.$, this.base).html();
+  return this.cache['article-content'] = utils.extract(this.$, this.base, this.options).html();
 }
 
 // Better Article Title Extraction. 
@@ -78,7 +79,7 @@ Article.prototype.getHTML = function() {
 var read = module.exports = function(html, options, callback) {
   if (typeof options === 'function') {
     callback = options;
-    options = {};
+    options = {considerDIVs: true};
   }
 
   if (!html.match(/^\s*</)) {
