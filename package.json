@@ -1,6 +1,6 @@
 {
     "name": "node-read",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "author": {
         "name": "Vadim Kravcenko"
     },
@@ -42,11 +42,5 @@
     "readmeFilename": "README.md",
     "bugs": {
         "url": "https://github.com/bndr/node-read/issues"
-    },
-    "_id": "node-read@0.0.22",
-    "dist": {
-        "shasum": "bf7a7ccdb16ebd61d9b67978a0f5c717786026da"
-    },
-    "_from": "node-read@*",
-    "_resolved": "http://registry.cnpmjs.org/node-read/download/node-read-0.0.22.tgz"
+    }
 }
