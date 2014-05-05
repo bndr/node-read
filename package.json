@@ -7,11 +7,8 @@
     "description": "Get Clean Reading Content from every web page",
     "homepage": "https://github.com/bndr/node-read",
     "dependencies": {
-        "request": "^2.34.0",
         "cheerio": "^0.15.0",
-        "iconv-lite": "*",
-        "jschardet": "*",
-        "zlib": "*"
+        "fetch": "*"
     },
     "devDependencies": {
         "mocha": "*",
