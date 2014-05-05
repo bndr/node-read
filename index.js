@@ -1,6 +1,7 @@
 var utils = require('./lib/utils.js');
-var req = require('./lib/req.js');
+var req = require('fetch').fetchUrl;
 var cheerio = require('cheerio');
+var url = require("url");
 
 function Article(dom, options, uri) {
   this.$ = dom; // Will be modified in-place after analyzing
@@ -8,6 +9,10 @@ function Article(dom, options, uri) {
   this.cache = {};
   if (uri && typeof uri != "undefined") {
     this.base = uri.protocol + "//" + uri.hostname;
+    // including port.
+    if(uri.port && uri.port != 80){
+      this.base += ':' + uri.port;
+    }
   } else {
     this.base = false;
   }
@@ -83,25 +88,23 @@ var read = module.exports = function(html, options, callback) {
   }
 
   if (!html.match(/^\s*</)) {
-    options.uri = html;
-    req(options, function(err, res) {
+    req(html, options, function(err, meta, body) {
       if (err) {
         return callback(err);
       }
-      parseDOM(res.body, res);
+      parseDOM(body, url.parse(html), body);
     });
   } else {
     parseDOM(html, null);
   }
 
-  function parseDOM(html, res) {
+  function parseDOM(html, uri, body) {
     if (typeof html !== 'string') html = html.toString();
     if (!html) return callback(new Error('Empty html'));
-    var url = (res) ? res.request.uri : null;
     var $ = cheerio.load(html, {
       normalizeWhitespace: true
     });
     if ($('body').length < 1) return callback(new Error("No body tag was found"));
-    return callback(null, new Article($, options, url), res);
+    return callback(null, new Article($, options, uri), body);
   }
 }
