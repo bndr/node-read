@@ -1,16 +1,20 @@
 var utils = require('./lib/utils.js');
-var req = require('./lib/req.js');
+var req = require('fetch').fetchUrl;
+var url = require('url');
 var cheerio = require('cheerio');
 
 function Article(dom, options, uri) {
   this.$ = dom; // Will be modified in-place after analyzing
   this.originalDOM = dom; // Save the original DOM if the user needs it
   this.cache = {};
+
   if (uri && typeof uri != "undefined") {
     this.base = uri.protocol + "//" + uri.hostname;
+    if (uri.port && uri.port != 80) this.base += ":" + uri.port;
   } else {
     this.base = false;
   }
+
   this.options = options;
   this.__defineGetter__('content', function() {
     return this.getContent(true);
@@ -30,7 +34,9 @@ Article.prototype.getContent = function() {
   if (typeof this.cache['article-content'] !== 'undefined') {
     return this.cache['article-content'];
   }
-  return this.cache['article-content'] = utils.extract(this.$, this.base, this.options).html();
+  var content = utils.extract(this.$, this.base, this.options).html();
+
+  return this.cache['article-content'] = content;
 }
 
 // Better Article Title Extraction. 
@@ -79,29 +85,29 @@ Article.prototype.getHTML = function() {
 var read = module.exports = function(html, options, callback) {
   if (typeof options === 'function') {
     callback = options;
-    options = {considerDIVs: true};
+    options = {
+      considerDIVs: true,
+      nodesToRemove: 'meta,iframe,noscript,style,aside,object,script'
+    };
   }
 
   if (!html.match(/^\s*</)) {
-    options.uri = html;
-    req(options, function(err, res) {
+    req(html, options, function(err, res, body) {
       if (err) {
         return callback(err);
       }
-      parseDOM(res.body, res);
+      parseDOM(body.toString(), url.parse(html));
     });
   } else {
     parseDOM(html, null);
   }
 
-  function parseDOM(html, res) {
-    if (typeof html !== 'string') html = html.toString();
+  function parseDOM(html, url) {
     if (!html) return callback(new Error('Empty html'));
-    var url = (res) ? res.request.uri : null;
     var $ = cheerio.load(html, {
       normalizeWhitespace: true
     });
     if ($('body').length < 1) return callback(new Error("No body tag was found"));
-    return callback(null, new Article($, options, url), res);
+    return callback(null, new Article($, options, url), url);
   }
 }
