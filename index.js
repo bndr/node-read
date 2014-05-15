@@ -51,7 +51,7 @@ Article.prototype.getTitle = function() {
   // https://www.readability.com/developers/guidelines#publisher).
   var preferredTitle = this.$('.entry-title, .instapaper_title');
   if (preferredTitle.length > 0) {
-    return this.cache['article-title'] = preferredTitle.first().text();
+    return this.cache['article-title'] = preferredTitle.first().text().trim();
   }
 
   var title = this.$('title').text();
@@ -71,7 +71,7 @@ Article.prototype.getTitle = function() {
     return this.cache['article-title'] = betterTitle;
   }
 
-  return this.cache['article-title'] = title;
+  return this.cache['article-title'] = title.trim();
 }
 
 Article.prototype.getDOM = function() {
