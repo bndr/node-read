@@ -9,7 +9,7 @@ function Article(dom, options, uri) {
   this.cache = {};
 
   if (uri && typeof uri != "undefined") {
-    this.base = uri.protocol + "//" + uri.hostname;
+    this.base = uri.protocol + "//" + uri.hostname + uri.pathname;
     if (uri.port && uri.port != 80) this.base += ":" + uri.port;
   } else {
     this.base = false;
