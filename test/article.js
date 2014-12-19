@@ -58,6 +58,13 @@ describe("Random Sites test", function() {
 			done();
 		});
 	});
+	it("Github Article", function(done) {
+		read("https://github.com/bndr/node-read", function(err, article, res) {
+			article.content.should.containEql("var read = require('node-read');");
+			article.title.should.containEql("node-read");
+			done();
+		});
+	});
 	it("Article From Blog", function(done) {
 		read("http://blog.atom.io/2014/05/06/atom-is-now-open-source.html", function(err, article, res) {
 			article.content.should.containEql("still a ton to do before Atom is ready for version");
