@@ -87,10 +87,10 @@ var read = module.exports = function(html, options, callback) {
     callback = options;
     options = {
       considerDIVs: true,
-      nodesToRemove: 'meta,iframe,noscript,style,aside,object,script'
+      nodesToRemove: 'meta,iframe,noscript,style,aside,object,script',
+	  filterResults:true //Additional filter in the content container
     };
   }
-
   if (!html.match(/^\s*</)) {
     req(html, options, function(err, res, body) {
       if (err) {
