@@ -105,7 +105,8 @@ var read = module.exports = function(html, options, callback) {
   function parseDOM(html, url) {
     if (!html) return callback(new Error('Empty html'));
     var $ = cheerio.load(html, {
-      normalizeWhitespace: true
+      normalizeWhitespace: true,
+      decodeEntities: false
     });
     if ($('body').length < 1) return callback(new Error("No body tag was found"));
     return callback(null, new Article($, options, url), url);
