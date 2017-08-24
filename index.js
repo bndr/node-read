@@ -54,7 +54,7 @@ Article.prototype.getTitle = function() {
     return this.cache['article-title'] = preferredTitle.first().text().trim();
   }
 
-  var title = this.$('title').text();
+  var title = this.$('title').first().text();
   var betterTitle;
   var commonSeparatingCharacters = [' | ', ' _ ', ' - ', '«', '»', '—'];
 
